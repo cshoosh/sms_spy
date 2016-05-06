@@ -13,6 +13,8 @@ import android.support.annotation.Nullable;
  * Created by Shahnawaz on 5/6/2016.
  */
 public class OutService extends Service {
+    MyObserver observer;
+
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
@@ -20,9 +22,22 @@ public class OutService extends Service {
     }
 
     @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
+    public void onCreate() {
+        observer = new MyObserver(new Handler());
         Uri uriSMSURI = Uri.parse("content://sms/sent");
-        getApplicationContext().getContentResolver().registerContentObserver(uriSMSURI, false, new MyObserver(new Handler()));
+        getApplicationContext().getContentResolver().registerContentObserver(uriSMSURI, false, observer);
+        super.onCreate();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        getApplicationContext().getContentResolver().unregisterContentObserver(observer);
+    }
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+
         return START_STICKY;
     }
 

