@@ -8,6 +8,11 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.net.Uri;
 import android.provider.ContactsContract;
 
+import com.google.gson.annotations.SerializedName;
+
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by Shahnawaz on 5/3/2016.
  */
@@ -67,6 +72,20 @@ public class DataBase extends SQLiteOpenHelper {
         }
     }
 
+    public List<Data> getMessages() {
+        ArrayList<Data> data = new ArrayList<>();
+        try {
+            String query = "SELECT * FROM " + TABLE_NAME;
+            Cursor cursor = this.getReadableDatabase().rawQuery(query, null);
+            if (cursor != null && cursor.moveToFirst()) {
+                data.add(new Data(cursor.getString(1), cursor.getString(2), cursor.getString(3), cursor.getInt(4)));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return data;
+    }
+
     public void deleteMessages() {
         try {
             this.getWritableDatabase().delete(TABLE_NAME, null, null);
@@ -95,5 +114,27 @@ public class DataBase extends SQLiteOpenHelper {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public static class Data {
+        @SerializedName("sms")
+        String sms;
+
+        @SerializedName("number")
+        String number;
+
+        @SerializedName("contact")
+        String contact;
+
+        @SerializedName("inbound")
+        Integer inbound;
+
+        public Data(String sms, String number, String contact, Integer inbound) {
+            this.sms = sms;
+            this.number = number;
+            this.contact = contact;
+            this.inbound = inbound;
+        }
+
     }
 }
